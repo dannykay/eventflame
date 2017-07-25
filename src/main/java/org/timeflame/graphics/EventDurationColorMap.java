@@ -6,18 +6,21 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** Returns a color for event duration
  * 
  * @author dkay
  *
  */
 public class EventDurationColorMap {
-	
-	private static class Threshold {
+	Logger logger = LoggerFactory.getLogger(EventDurationColorMap.class);
+	public static class Threshold {
 		
-		public final double upperLimitSecs;
-		public final RGB rgb;
-		public final String label;
+		private final double upperLimitSecs;
+		private final RGB rgb;
+		private final String label;
 		private Threshold(double upperLimitSecs, int rgb, String label) {
 			super();
 			this.upperLimitSecs = upperLimitSecs;
@@ -33,10 +36,11 @@ public class EventDurationColorMap {
 			case "m" : secMultiplier=60F; break;
 			case "h" : case "hr" : secMultiplier=3600F; break;
 			case "d" : secMultiplier=3600F*24F; break;
+			default :secMultiplier = 0F;break;
 			}
-			double units=Float.parseFloat(tok[0].replaceAll("[a-zA-Z]", ""));
+			double units=Float.parseFloat("0"+tok[0].replaceAll("[a-zA-Z]", ""));
 			int rgb=tok.length>1?Integer.decode("0x"+tok[1]):0;
-			if (label.length()==0&&tok.length>0) {
+			if (label.length()==0) {
 				label=tok[0];
 			}
 			return new Threshold(units*secMultiplier,rgb,label);
@@ -49,6 +53,10 @@ public class EventDurationColorMap {
 		}
 		public final String getLabel() {
 			return label;
+		}
+		@Override
+		public String toString() {
+			return "Threshold [" + upperLimitSecs + "sec, rgb=" + rgb + ", \"" + label + "\"]";
 		}
 		
 	}
@@ -81,16 +89,26 @@ public class EventDurationColorMap {
 	public RGB decode(double secs) {
 		return decode(secs,false);
 	}
-	public RGB decode(double secs,boolean intep) {
+	public RGB decode(double secs,boolean doInterpolate) {
 		for (int i=0;i<thresholds.size();i++) {
 			if (secs<thresholds.get(i).getUpperLimitSecs()||i==thresholds.size()-1) {
-				Threshold lo=thresholds.get(Math.max(i-i, 0));
+				Threshold lo=thresholds.get(Math.max(i-1, 0));
 				Threshold hi=thresholds.get(Math.max(i, 0));
 				double range=hi.getUpperLimitSecs()-lo.getUpperLimitSecs();
-				double percent=(intep&&range>0)?(secs-lo.getUpperLimitSecs())/range : 0.0F;
-				return RGB.interp(lo.getRgb(),hi.getRgb(),percent);
+				double percent=doInterpolate?(secs-lo.getUpperLimitSecs())/range : 0.0F;
+				percent=Math.max(0, Math.min(1.0, percent));
+				RGB rgb=RGB.interp(lo.getRgb(),hi.getRgb(),percent);
+				logger.debug(String.format("%,1.1fsecs hi=%s lo=%s interp flag=%s inter%%=%1.2f =>%s",secs,hi,lo,doInterpolate?"true":false,percent,rgb));
+				return rgb;
 			}
 		}
 		return defRgb;
 	}
+
+	public final List<Threshold> getThresholds() {
+		ArrayList<Threshold> r=new ArrayList<>(thresholds.size());
+		r.addAll(0, thresholds);
+		return r;
+	}
+	
 }

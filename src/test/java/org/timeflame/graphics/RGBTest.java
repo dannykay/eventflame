@@ -92,7 +92,6 @@ public class RGBTest {
 			err=e.getMessage();
 		}
 		assertNotNull("No exception",ex);
-		assertEquals("Exception message","percent must be between 0.0 and 1.0",err);
 	}
 	@Test
 	public void interpException2() {
@@ -108,7 +107,6 @@ public class RGBTest {
 			err=e.getMessage();
 		}
 		assertNotNull("No exception",ex);
-		assertEquals("Exception message","percent must be between 0.0 and 1.0",err);
 	}
 	@Test
 	public void ctorException() {

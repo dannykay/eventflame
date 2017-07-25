@@ -35,7 +35,6 @@ public class EventTest {
 	@Test
 	public void testToString() {
 		Event e = new Event(1L,2L);
-		System.out.println(e);
 		assertEquals("string","Event [1,2]",e.toString());
 	}
 
