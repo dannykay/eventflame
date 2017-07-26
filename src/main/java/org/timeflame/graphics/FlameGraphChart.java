@@ -1,5 +1,16 @@
 package org.timeflame.graphics;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.geom.Line2D;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
+import javax.imageio.ImageIO;
+
 public class FlameGraphChart {
 	/** pixel height of the 2D graphic */
 	double px_canvas_height=1000;
@@ -33,6 +44,23 @@ public class FlameGraphChart {
 	
 	/** fattness of bar expressed as a proportion of data height */
 	double bar_pct_height=0.9;
+
+	public FlameGraphChart() {
+		super();
+	}
 	
+	public byte[] writePngFile() throws IOException {
+
+		BufferedImage bi = new BufferedImage((int)px_canvas_width, (int)px_canvas_height, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = bi.createGraphics();
+		g.setColor(Color.WHITE);
+		g.drawRect(0,0,(int)px_canvas_width,(int)px_canvas_height);
+		g.setColor(Color.BLACK);
+		g.setStroke(new BasicStroke(1.0f,BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+		g.drawLine(this.px_y_axis_label_width, this., x2, y2);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ImageIO.write(bi, "png", baos);
+		return baos.toByteArray();
+	}
 	
 }
