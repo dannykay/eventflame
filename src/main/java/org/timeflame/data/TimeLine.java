@@ -1,5 +1,6 @@
 package org.timeflame.data;
 
+import java.lang.reflect.Array;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -44,11 +45,25 @@ public class TimeLine {
 		}
 		return arr;
 	}
-	public List<String> quarterHourLabels() {
-		DateTimeFormatter f = DateTimeFormatter.ofPattern("h:mma");
-		return quarterHours()
+	public List<List<String>> quarterHourLabels() {
+		DateTimeFormatter f = DateTimeFormatter.ofPattern("h:mma").withZone(zone);
+		DateTimeFormatter d = DateTimeFormatter.ofPattern("MMM dd YYYY").withZone(zone);
+		List<List<String>> r=new ArrayList<>();
+		r.add(	quarterHours()
 				.stream()
 				.map((Instant i)->f.format(i).replaceFirst(".*:[^0].*", ""))
-				.collect(Collectors.toList());
+				.collect(Collectors.toList()));
+		r.add(	quarterHours()
+				.stream()
+				.map((Instant i)->d.format(i))	
+				.collect(Collectors.toList()));
+		for (int i=r.get(1).size()-1;i>0;i--) {
+			if (r.get(1).get(i-1).matches(r.get(1).get(i))) {
+				r.get(1).set(i, "");
+			}
+		}
+		return r;
+		
+		
 	}
 }

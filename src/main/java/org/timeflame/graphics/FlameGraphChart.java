@@ -63,7 +63,7 @@ public class FlameGraphChart {
 
 	public FlameGraphChart(TimeFlameGraph timeFlameGraph) {
 		super();
-		this.timeFlameGraph=Optional.of(timeFlameGraph);
+		this.timeFlameGraph=Optional.ofNullable(timeFlameGraph);
 	}
 	
 	private void rightAlignedText(double x,double y,String text) {

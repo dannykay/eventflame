@@ -23,7 +23,7 @@ public class TimeLineTest {
 		Instant i1 = Instant.parse("1990-05-17T22:04:00Z");
 		TimeLine tl=new TimeLine(i0.getEpochSecond()*1000L,i1.getEpochSecond()*1000L,ZoneId.of("Z"));
 		System.out.println(tl.quarterHourLabels());
-		assertEquals("wholeHourCount",23,tl.wholeHourCount());
+		assertEquals("wholeHourCount",18,tl.wholeHourCount());
 	}
 
 }
