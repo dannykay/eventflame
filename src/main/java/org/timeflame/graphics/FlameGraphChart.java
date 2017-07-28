@@ -9,12 +9,16 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Optional;
 
 import javax.imageio.ImageIO;
+
+import org.timeflame.data.TimeFlameGraph;
 
 public class FlameGraphChart {
 	private BufferedImage bi ;
 	private Graphics2D g ;
+	private final Optional<TimeFlameGraph> timeFlameGraph;
 	
 	/** pixel height of the 2D graphic */
 	double px_canvas_height=1000;
@@ -57,8 +61,9 @@ public class FlameGraphChart {
 	
 	/** fattness of bar expressed as a proportion of data height */
 
-	public FlameGraphChart() {
+	public FlameGraphChart(TimeFlameGraph timeFlameGraph) {
 		super();
+		this.timeFlameGraph=Optional.of(timeFlameGraph);
 	}
 	
 	private void rightAlignedText(double x,double y,String text) {
@@ -94,7 +99,6 @@ public class FlameGraphChart {
 	
 			int max_x = (int)(px_y_axis_label_width+px_x_data_width);
 			g.drawLine((int) px_y_axis_label_width, (int) px_header_title_margin , (int)(px_y_axis_label_width) , (int) (px_header_title_margin + px_y_data_height));
-			//g.drawLine((int) px_y_axis_label_width, (int) px_y_zero , (int)(px_y_axis_label_width+px_x_data_width) ,(int) px_y_zero);
 			
 			float dash[] = {1f,3f};
 			for (double tick=y_min_tick;tick<=y_max_tick;tick+=y_major_tick) {
@@ -125,8 +129,6 @@ public class FlameGraphChart {
 					} 
 				}
 			}
-			
-		
 			
 			baos = new ByteArrayOutputStream();
 			ImageIO.write(bi, "png", baos);

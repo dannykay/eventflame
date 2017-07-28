@@ -22,7 +22,7 @@ public class ImageServerHandler extends AbstractHandler {
 			throws IOException, ServletException {
 
 		if (target.matches(".*png.*")) {
-			FlameGraphChart fgc = new FlameGraphChart();
+			FlameGraphChart fgc = new FlameGraphChart(null);
 			byte[] png = fgc.writePngFile();
 			response.setContentType("image/png");
 			response.setContentLength(png.length);
